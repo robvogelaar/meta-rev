@@ -6,14 +6,17 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 DEPENDS = "efl"
 
-SRC_URI = "file://evas_box.c"
+SRC_URI = "file://evas-box.c \
+           file://evas-stacking.c "
 SRCREV = "${AUTOREV}"
 
 do_compile() {
-    ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/evas_box.c -o evas_box `pkg-config --libs --cflags evas ecore ecore-evas eina`
+    ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/evas-box.c -o evas-box `pkg-config --libs --cflags evas ecore ecore-evas eina`
+    ${CC} ${CFLAGS} ${LDFLAGS} ${WORKDIR}/evas-stacking.c -o evas-stacking `pkg-config --libs --cflags evas ecore ecore-evas eina`
 }
 
 do_install() {
     install -m 0755 -d ${D}${bindir}
-    install -m 0755 ${S}/evas_box ${D}${bindir}
+    install -m 0755 ${S}/evas-box ${D}${bindir}
+    install -m 0755 ${S}/evas-stacking ${D}${bindir}
 }
