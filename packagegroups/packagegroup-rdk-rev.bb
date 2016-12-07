@@ -5,5 +5,5 @@ LICENSE = "MIT"
 inherit packagegroup
 
 RDEPENDS_${PN} = "\
-    tditracer gles2apps efl elementary nodejs eflapps elementaryapps elev8-plugins lgioui lgias \
+    tditracer gles2apps efl elementary nodejs nodejs-modules eflapps elementaryapps elev8-plugins lgioui lgias \
 "
