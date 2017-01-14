@@ -115,6 +115,17 @@ static void Callback_setFocus(const FunctionCallbackInfo<Value>& args) {
   args.GetReturnValue().Set(Integer::New(args.GetIsolate(), ret));
 }
 
+static void Callback_setVisible(const FunctionCallbackInfo<Value>& args) {
+  HandleScope scope(args.GetIsolate());
+  int ret = -1;
+  SD_DEBUG( " %4d | %s\n", __LINE__, __FUNCTION__);
+  if (args.Length() == 2) {
+    ret = 0;
+  }
+  SD_DEBUG( " %4d | %s | %d\n", __LINE__, __FUNCTION__, ret );
+  args.GetReturnValue().Set(Integer::New(scope.GetIsolate(), ret));
+}
+
 static void Callback_animatePosition(const FunctionCallbackInfo<Value>& args) {
   int ret = -1;
   SD_DEBUG( " %4d | %s\n", __LINE__, __FUNCTION__);
@@ -224,6 +235,7 @@ extern "C" void RegisterModule(Isolate *isolate, Handle<Object> target) {
                       METHOD(setZorder),
                       METHOD(setOpacity),
                       METHOD(setFocus),
+                      METHOD(setVisible),
                       METHOD(animatePosition),
                       METHOD(animateScale),
                       METHOD(animateOpacity),
