@@ -24,6 +24,7 @@ do_compile() {
 
 do_install() {
     install -m 0755 -d ${D}${bindir}
+    install -m 0755 -d ${D}/usr/share/evas
     install -m 0755 ${WORKDIR}/red.png ${D}/usr/share/evas
     install -m 0755 ${S}/evas-minimal ${D}${bindir}
     install -m 0755 ${S}/evas-box ${D}${bindir}

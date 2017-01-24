@@ -1,0 +1,20 @@
+SUMMARY = "RDK image containing westeros"
+
+require ../meta-rdk/recipes-core/images/rdk-image-oss-noqt.bb
+
+IMAGE_INSTALL += "packagegroup-rdk-westeros"
+
+IMAGE_INSTALL += "packagegroup-rdk-debug-extra"
+
+IMAGE_INSTALL += " \
+    gles2apps \
+    tditracer \
+    efl \
+    eflapps \
+    nodejs \
+    nodejs-modules \
+    elev8-plugins \
+    lgioui \
+    lgias \
+    wpe-launcher \
+"
