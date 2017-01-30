@@ -11,3 +11,9 @@ SRCREV = "${AUTOREV}"
 S = "${WORKDIR}/git"
 
 inherit autotools pkgconfig
+
+PACKAGECONFIG ??= ""
+PACKAGECONFIG[egl] = "--enable-egl,--disable-egl,libegl"
+PACKAGECONFIG[gles2] = "--enable-gles2,--disable-gles2,libgles2"
+PACKAGECONFIG[libc] = "--enable-libc,--disable-libc,,"
+PACKAGECONFIG[libpthread] = "--enable-libpthread,--disable-libpthread,,"
