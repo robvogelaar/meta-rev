@@ -30,3 +30,10 @@ do_compile_append() {
     ${CC} ${CFLAGS} ${LDFLAGS} ${S}/minimal-tdi-tests/smemcap.c -Wall -Wno-unused-variable -o smemcap
     ${CC} ${CFLAGS} ${LDFLAGS} ${S}/minimal-tdi-tests/fincore.c -Wall -lm -o fincore
 }
+
+do_install_append() {
+    install -m 0755 -d ${D}${bindir}
+    install -m 0755 -d ${D}${libdir}
+    install -m 0755 ${S}/tdim ${D}${bindir}
+    install -m 0755 ${S}/libtdim.so ${D}${libdir}
+}
