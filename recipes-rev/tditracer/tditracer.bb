@@ -36,4 +36,6 @@ do_install_append() {
     install -m 0755 -d ${D}${libdir}
     install -m 0755 ${S}/tdim ${D}${bindir}
     install -m 0755 ${S}/libtdim.so ${D}${libdir}
+    install -m 0755 ${S}/sleeper ${D}${bindir}
+    install -m 0755 ${S}/fincore ${D}${bindir}
 }
