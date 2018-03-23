@@ -1,4 +1,4 @@
-EXTRA_CFLAGS := -I$(src) -DDEBUG -Werror
+EXTRA_CFLAGS := -I$(src) -DDEBUG -Werror -Wno-error=date-time
 obj-m += krev.o
 SRC := $(shell pwd)
 
