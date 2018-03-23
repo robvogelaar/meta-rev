@@ -62,8 +62,7 @@ int proc_rev_status(struct seq_file *sf, void *v) {
 
 static int do_something(void *kvm, u32 len) {
   void *x;
-  if (!kvm || !len)
-    return -1;
+  if (!kvm || !len) return -1;
 
   for (x = kvm; x < (kvm + len); x += PAGE_SIZE) {
     memset(x, 0xff, 0x10);
@@ -73,68 +72,92 @@ static int do_something(void *kvm, u32 len) {
 
 u32 *vm;
 u32 *km;
+u32 *fp;
 
 int proc_rev_control(struct file *file, const char __user *buffer, size_t count,
                      loff_t *ppos) {
   char *str;
   u8 argc = 0;
   char *argv[5];
-#if 0
+#if 1
   u8 i;
 #endif
   u32 sz;
 
   str = kzalloc(count + 1, GFP_KERNEL);
-  if (!str)
-    return -ENOMEM;
+  if (!str) return -ENOMEM;
 
-  if (copy_from_user(str, buffer, count))
-    return -EFAULT;
+  if (copy_from_user(str, buffer, count)) return -EFAULT;
 
   rev_parse_args(str, &argc, argv, 5);
 
-#if 0
+#if 1
   for (i = 0; i < argc; i++) {
-    printk("argv[%d]=%s\n", i, argv[i]);
+    printk("argv[%d]=%s, %02x\n", i, argv[i], *argv[i]);
   }
 #endif
 
-  if (argc >= 2) {
-    if (!strcmp(argv[0], "kmalloc")) {
-      sz = (int)simple_strtol(argv[1], NULL, 10);
-      km = kmalloc(sz, GFP_KERNEL);
-      do_something(km, sz);
-      if (!km)
-        printk("kmalloc of %u bytes FAILED!\n", sz);
-      else {
-        printk("kmalloc'd %u bytes (%u Kb, %u MB) @ 0x%08x\n",
-               sz, sz / 1024, sz / (1024 * 1024), (u32)km);
-      }
-    } else if (!strcmp(argv[0], "vmalloc")) {
-      sz = (int)simple_strtol(argv[1], NULL, 10);
-      vm = vmalloc(sz);
-      do_something(vm, sz);
-      if (!vm)
-        printk("vmalloc of %u bytes FAILED!\n", sz);
-      else {
-        printk("vmalloc'd %u bytes (%u Kb, %u MB) @ 0x%08x\n",
-               sz, sz / 1024, sz / (1024 * 1024), (u32)vm);
-      }
-    } else if (!strcmp(argv[0], "kfree")) {
-      if (!km)
-        printk("km = 0!\n");
-      else {
-        kfree(km);
-        printk("kfree'd\n");
-      }
-    } else if (!strcmp(argv[0], "vfree")) {
-      if (!vm)
-        printk("vm = 0!\n");
-      else {
-        vfree(vm);
-        printk("vfree'd\n");
-      }
+  if (argc && (*argv[argc - 1] == 0x0)) argc--;
+
+  if ((argc == 2) && !strcmp(argv[0], "kmalloc")) {
+    sz = (int)simple_strtol(argv[1], NULL, 10);
+    km = kmalloc(sz, GFP_KERNEL);
+    do_something(km, sz);
+    if (!km)
+      printk("kmalloc of %u bytes FAILED!\n", sz);
+    else {
+      printk("kmalloc'd %u bytes (%u Kb, %u MB) @ 0x%08x, ksize = %u\n", sz,
+             sz / 1024, sz / (1024 * 1024), (u32)km, ksize(km));
     }
+  } else if ((argc == 2) && !strcmp(argv[0], "vmalloc")) {
+    sz = (int)simple_strtol(argv[1], NULL, 10);
+    vm = vmalloc(sz);
+    do_something(vm, sz);
+    if (!vm)
+      printk("vmalloc of %u bytes FAILED!\n", sz);
+    else {
+      printk("vmalloc'd %u bytes (%u Kb, %u MB) @ 0x%08x\n", sz, sz / 1024,
+             sz / (1024 * 1024), (u32)vm);
+    }
+  } else if ((argc == 1) && !strcmp(argv[0], "kfree")) {
+    if (!km)
+      printk("km = 0!\n");
+    else {
+      kfree(km);
+      printk("kfree'd\n");
+    }
+  } else if ((argc == 1) && !strcmp(argv[0], "vfree")) {
+    if (!vm)
+      printk("vm = 0!\n");
+    else {
+      vfree(vm);
+      printk("vfree'd\n");
+    }
+  } else if ((argc == 1) && !strcmp(argv[0], "__get_free_page")) {
+    fp = (u32 *)__get_free_page(GFP_KERNEL);
+    do_something(fp, 1);
+    if (!fp)
+      printk("__get_free_page FAILED!\n");
+    else {
+      printk("__get_free_page @ 0x%08x\n", (u32)fp);
+    }
+  } else if ((argc == 1) && !strcmp(argv[0], "get_zeroed_page")) {
+    fp = (u32 *)get_zeroed_page(GFP_KERNEL);
+    if (!fp)
+      printk("get_zeroed_page FAILED!\n");
+    else {
+      printk("get_zeroed_page @ 0x%08x\n", (u32)fp);
+    }
+  } else if ((argc == 2) && !strcmp(argv[0], "__get_free_pages")) {
+    sz = (int)simple_strtol(argv[1], NULL, 10);
+    fp = (u32 *)__get_free_pages(GFP_KERNEL, sz);
+    if (!fp)
+      printk("__get_free_pages FAILED!\n");
+    else {
+      printk("__get_free_pages allocated %u pages @ 0x%08x\n", 2 << sz,
+             (u32)fp);
+    }
+
   } else {
     printk("unknown command");
   }
