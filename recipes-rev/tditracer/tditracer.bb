@@ -38,4 +38,6 @@ do_install_append() {
     install -m 0755 ${S}/libtdim.so ${D}${libdir}
     install -m 0755 ${S}/sleeper ${D}${bindir}
     install -m 0755 ${S}/fincore ${D}${bindir}
+    install -d ${D}/etc/
+    install -m 755 ${S}/minimal-tdi-tests/memreport.sh ${D}/etc/
 }
